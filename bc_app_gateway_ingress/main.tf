@@ -113,49 +113,6 @@ resource "azurerm_application_gateway" "AppGw" {
     identity_ids                  = [data.azurerm_user_assigned_identity.managed_identity_aad.id] # [azurerm_user_assigned_identity.managed_id.id]
   }
 
-  # # Rancher Config
-
-  # http_listener {
-  #   name                           = "rancher"
-  #   frontend_ip_configuration_name = "${var.project}-${var.environment}-appgw-feip"
-  #   frontend_port_name             = "${var.project}-${var.environment}-appgw-feporthttps"
-  #   protocol                       = "HTTPS"
-  #   host_name                      = "rancher-${var.environment}.${local.envURL}"
-  #   ssl_certificate_name           = data.azurerm_key_vault_secret.certname.value
-  # }
-
-  # backend_address_pool {
-  #   name = "rancher"
-  # } 
-
-  # backend_http_settings {
-  #   name                  = "rancher"
-  #   cookie_based_affinity = "Disabled"
-  #   path                  = "/"
-  #   port                  = 80
-  #   protocol              = "Http"
-  #   request_timeout       = 20
-  #   probe_name            = "rancher"
-  # }
-
-  # request_routing_rule {
-  #   name                       = "rancher"
-  #   rule_type                  = "Basic"
-  #   http_listener_name         = "rancher"
-  #   backend_address_pool_name  = "rancher"
-  #   backend_http_settings_name = "rancher"
-  # }
-
-  # probe {
-  #   name                = "rancher"
-  #   host                = "rancher-${var.environment}.${local.envURL}"
-  #   interval            = "30"
-  #   timeout             = "30"
-  #   unhealthy_threshold = "3"
-  #   path                = "/"
-  #   protocol            = "Http"
-  # }
-
   # Waf config
 
   # waf_configuration {
