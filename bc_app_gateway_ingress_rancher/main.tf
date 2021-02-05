@@ -32,11 +32,22 @@ resource "azurerm_application_gateway" "AppGw" {
     request_timeout                = 1
   }
 
-  # HTTP
   frontend_port {
     name                           = "${var.ag_name_fragment}-appgw-feport"
     port                           = 80
   }
+
+  frontend_port {
+    name                           = "${var.ag_name_fragment}-appgw-feporthttps"
+    port                           = 443
+  }
+
+  ssl_policy {
+    policy_type                   = "Predefined"
+    policy_name                   = "AppGwSslPolicy20170401S"
+  }
+
+  # Static Sites
 
   http_listener {
     name                           = "${var.ag_name_fragment}-appgw-httplstn"
@@ -53,16 +64,24 @@ resource "azurerm_application_gateway" "AppGw" {
     backend_http_settings_name    = "${var.ag_name_fragment}-appgw-be-htst"
   }
 
-  ssl_policy {
-    policy_type                   = "Predefined"
-    policy_name                   = "AppGwSslPolicy20170401S"
+  http_listener {
+    name                           = "${var.ag_name_fragment}-appgw-httpslstn"
+    frontend_ip_configuration_name = "${var.ag_name_fragment}-appgw-feip"
+    frontend_port_name             = "${var.ag_name_fragment}-appgw-feporthttps"
+    protocol                       = "HTTPS"
+    host_name                      = var.core_url
+    ssl_certificate_name           = var.ssl_cert_name
   }
 
-  # HTTPS
-  frontend_port {
-    name                           = "${var.ag_name_fragment}-appgw-feporthttps"
-    port                           = 443
+  request_routing_rule {
+    name                          = "${var.ag_name_fragment}-appgw-rqrt-https"
+    rule_type                     = "Basic"
+    http_listener_name            = "${var.ag_name_fragment}-appgw-httpslstn"
+    backend_address_pool_name     = "${var.ag_name_fragment}-appgw-beap"
+    backend_http_settings_name    = "${var.ag_name_fragment}-appgw-be-htst"
   }
+
+  # Redirect
   
   http_listener {
     name                           = "${var.ag_name_fragment}-appgw-pub-httpslstn"
@@ -104,8 +123,8 @@ resource "azurerm_application_gateway" "AppGw" {
   }
   
   ssl_certificate {
-     name                         = var.ssl_cert_name
-     key_vault_secret_id          = var.ssl_cert_secret_id
+    name                         = var.ssl_cert_name
+    key_vault_secret_id          = var.ssl_cert_secret_id
   }
 
   identity {
@@ -120,7 +139,7 @@ resource "azurerm_application_gateway" "AppGw" {
     frontend_ip_configuration_name = "${var.ag_name_fragment}-appgw-feip"
     frontend_port_name             = "${var.ag_name_fragment}-appgw-feporthttps"
     protocol                       = "HTTPS"
-    host_name                      = "rancher-${var.environment}.${var.core_url}"
+    host_name                      = join(".", ["rancher-${var.environment}", trim(var.core_url, "${var.environment}.")])
     ssl_certificate_name           = var.ssl_cert_name
   }
 
@@ -148,7 +167,7 @@ resource "azurerm_application_gateway" "AppGw" {
 
   probe {
     name                = "rancher"
-    host                = "rancher-${var.environment}.${var.core_url}"
+    host                = join(".", ["rancher-${var.environment}", trim(var.core_url, "${var.environment}.")])
     interval            = "30"
     timeout             = "30"
     unhealthy_threshold = "3"
