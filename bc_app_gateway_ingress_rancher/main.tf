@@ -139,7 +139,7 @@ resource "azurerm_application_gateway" "AppGw" {
     frontend_ip_configuration_name = "${var.ag_name_fragment}-appgw-feip"
     frontend_port_name             = "${var.ag_name_fragment}-appgw-feporthttps"
     protocol                       = "HTTPS"
-    host_name                      = join(".", ["rancher-${var.environment}", trim(var.core_url, "${var.environment}.")])
+    host_name                      = local.rancherURL
     ssl_certificate_name           = var.ssl_cert_name
   }
 
@@ -167,7 +167,7 @@ resource "azurerm_application_gateway" "AppGw" {
 
   probe {
     name                = "rancher"
-    host                = join(".", ["rancher-${var.environment}", trim(var.core_url, "${var.environment}.")])
+    host                = local.rancherURL
     interval            = "30"
     timeout             = "30"
     unhealthy_threshold = "3"
