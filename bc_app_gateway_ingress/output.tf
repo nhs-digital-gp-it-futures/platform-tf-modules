@@ -8,3 +8,7 @@ output "appgw_pip_fqdn" {
     description = "The Application Gateway Public Name"
     value = azurerm_public_ip.PipAppGw.fqdn
 }
+
+output "site_URL" {
+    value = var.core_url
+}
