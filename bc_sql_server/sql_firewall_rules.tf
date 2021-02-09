@@ -26,6 +26,8 @@ resource "azurerm_sql_firewall_rule" "sql_mastek_vpn" {
 
 # SQL Firewall rule to allow subnet access from aks network
 resource "azurerm_sql_virtual_network_rule" "sql_aks_net" {
+  count               =  var.aks_subnet_id != "" ? 1 : 0 
+  
   name                = "${var.project}-${var.environment}-aks-subnet-rule"
   resource_group_name = var.rg_name
   server_name         = azurerm_sql_server.sql_server.name
