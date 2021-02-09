@@ -38,7 +38,7 @@ resource "azurerm_sql_database" "sql_isapi_pub_rep" {
 }
 
 resource "azurerm_sql_database" "sql_ordapi_pub_rep" {
-  name                = "${var.db_name}-public-isapi"
+  name                = "${var.db_name}-public-ordapi"
   resource_group_name = var.rg_replica_name
   location            = var.region_replica
   server_name         = var.sqlsvr_replica_name
