@@ -9,10 +9,10 @@ output "appgw_pip_fqdn" {
     value = azurerm_public_ip.PipAppGw.fqdn
 }
 
-output "site_URL" {
+output "appgw_site_URL" {
     value = var.core_url
 }
 
-output "rancher_URL" {
-    value = join(".", ["rancher-${var.environment}", trim(var.core_url, "${var.environment}.")])
+output "appgw_rancher_URL" {
+    value = local.rancherURL
 }
