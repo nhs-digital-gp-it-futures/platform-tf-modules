@@ -31,6 +31,3 @@ variable "bjssvpn" {
 variable "mastekvpn" {
   type = string
 }
-variable "aks_subnet_id" {
-  type = string
-}

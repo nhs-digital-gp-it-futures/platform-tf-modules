@@ -9,6 +9,6 @@ output "appgw_pip_fqdn" {
     value = azurerm_public_ip.PipAppGw.fqdn
 }
 
-output "site_URL" {
+output "appgw_site_URL" {
     value = var.core_url
 }
