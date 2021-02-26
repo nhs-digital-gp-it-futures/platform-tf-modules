@@ -58,3 +58,7 @@ variable "kv_id" {
 variable "kv_key" {
   type = string
 }
+variable "kube_dashboard" {
+  type = string
+}
+

@@ -17,6 +17,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     max_count                     = var.aks_max_nodes
     min_count                     = var.aks_min_nodes
     node_count                    = var.aks_init_nodes
+    orchestrator_version          = var.aks_version
     availability_zones            = [1,2,3]
     tags = {
       environment                 = var.environment
@@ -43,7 +44,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
   addon_profile {
     kube_dashboard {
-      enabled                     = true
+      enabled                     = var.kube_dashboard
     }
 
     oms_agent {
