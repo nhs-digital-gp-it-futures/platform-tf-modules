@@ -9,6 +9,11 @@ resource "azurerm_application_gateway" "AppGw" {
     capacity                       = var.ag_capacity
   }
 
+  custom_error_configuration {
+    status_code                   = "HttpStatus502"
+    custom_error_page_url         = "https://gpitfuturesappgwcontent.z33.web.core.windows.net/index.html"
+  }
+
   gateway_ip_configuration {
     name                           = "${var.ag_name_fragment}-gwip"
     subnet_id                      = var.ag_subnet_id
@@ -187,6 +192,7 @@ resource "azurerm_application_gateway" "AppGw" {
       probe,
       redirect_configuration,      
       url_path_map,     
+      custom_error_configuration,
       tags, 
     ]
   }
