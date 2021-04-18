@@ -22,16 +22,17 @@ resource "azurerm_app_service" "webapp" {
   app_service_plan_id = azurerm_app_service_plan.webapp_sp.id
   
   app_settings = {
+    # Main Settings
+    WEBSITES_ENABLE_APP_SERVICE_STORAGE = false
     # Settings for Container Registy  
-    DOCKER_REGISTRY_SERVER_URL      = "https://${data.azurerm_container_registry.acr.login_server}"
-    DOCKER_REGISTRY_SERVER_USERNAME = data.azurerm_container_registry.acr.admin_username
-    DOCKER_REGISTRY_SERVER_PASSWORD = data.azurerm_container_registry.acr.admin_password
+    DOCKER_REGISTRY_SERVER_URL          = "https://${data.azurerm_container_registry.acr.login_server}"
+    DOCKER_REGISTRY_SERVER_USERNAME     = data.azurerm_container_registry.acr.admin_username
+    DOCKER_REGISTRY_SERVER_PASSWORD     = data.azurerm_container_registry.acr.admin_password
     # Settings for sql
-
   }
   # Configure Docker Image to load on start
   site_config {
-    linux_fx_version          = "DOCKER|${var.repository_name}:latest"
+    linux_fx_version          = "DOCKER|${data.azurerm_container_registry.acr.login_server}/${var.repository_name}:latest"
     use_32_bit_worker_process = true
     always_on        = var.always_on
     min_tls_version  = "1.2"
