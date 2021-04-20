@@ -27,8 +27,10 @@ resource "azurerm_app_service" "webapp" {
     # Settings for Container Registy  
     DOCKER_REGISTRY_SERVER_URL          = "https://${data.azurerm_container_registry.acr.login_server}"
     DOCKER_REGISTRY_SERVER_USERNAME     = data.azurerm_container_registry.acr.admin_username
-    DOCKER_REGISTRY_SERVER_PASSWORD     = data.azurerm_container_registry.acr.admin_password
+    DOCKER_REGISTRY_SERVER_PASSWORD     = var.acr_pwd
     # Settings for sql
+    BC_DB_CONNECTION                    = "Server=tcp:${data.azurerm_sql_server.sql_server.fqdn},1433;Initial Catalog=${var.db_name}-bapi;Persist Security Info=False;User ID=${data.azurerm_sql_server.sql_server.administrator_login};Password=${var.auth_pwd};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    ID_DB_CONNECTION                    = "Server=tcp:${data.azurerm_sql_server.sql_server.fqdn},1433;Initial Catalog=${var.db_name}-isapi;Persist Security Info=False;User ID=${data.azurerm_sql_server.sql_server.administrator_login};Password=${var.auth_pwd};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
   }
   # Configure Docker Image to load on start
   site_config {
@@ -48,7 +50,7 @@ resource "azurerm_app_service" "webapp" {
   lifecycle {
     ignore_changes = [
       app_settings,
-      #site_config
+      site_config
     ]
   }
 }
