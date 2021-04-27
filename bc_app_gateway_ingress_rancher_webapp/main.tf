@@ -183,13 +183,12 @@ resource "azurerm_application_gateway" "AppGw" {
   # WebApp Config
 
   http_listener {
-    name                                = "webapp"
-    frontend_ip_configuration_name      = "${var.ag_name_fragment}-appgw-feip"
-    frontend_port_name                  = "${var.ag_name_fragment}-appgw-feporthttps"
-    protocol                            = "HTTPS"
-    host_name                           = var.webapp_url
-    ssl_certificate_name                = var.ssl_cert_name
-    pick_host_name_from_backend_address = true
+    name                            = "webapp"
+    frontend_ip_configuration_name  = "${var.ag_name_fragment}-appgw-feip"
+    frontend_port_name              = "${var.ag_name_fragment}-appgw-feporthttps"
+    protocol                        = "HTTPS"
+    host_name                       = var.webapp_url
+    ssl_certificate_name            = var.ssl_cert_name
   }
 
   backend_address_pool {
@@ -198,13 +197,14 @@ resource "azurerm_application_gateway" "AppGw" {
   }
 
   backend_http_settings {
-    name                  = "webapp"
-    cookie_based_affinity = "Disabled"
-    path                  = "/"
-    port                  = 443
-    protocol              = "Https"
-    request_timeout       = 20
-    probe_name            = "webapp"
+    name                                = "webapp"
+    cookie_based_affinity               = "Disabled"
+    path                                = "/"
+    port                                = 443
+    protocol                            = "Https"
+    request_timeout                     = 20
+    probe_name                          = "webapp"
+    pick_host_name_from_backend_address = true
   }
 
   request_routing_rule {
