@@ -37,3 +37,9 @@ variable "pip_name" {
 variable "managed_id_principal_id" {
   type = string
 }
+variable "webapp_name" {
+  type = string
+}
+variable "webapp_url" {
+  type = string
+}

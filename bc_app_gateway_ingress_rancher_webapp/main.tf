@@ -180,6 +180,51 @@ resource "azurerm_application_gateway" "AppGw" {
     protocol            = "Http"
   }
 
+  # WebApp Config
+
+  http_listener {
+    name                                = "webapp"
+    frontend_ip_configuration_name      = "${var.ag_name_fragment}-appgw-feip"
+    frontend_port_name                  = "${var.ag_name_fragment}-appgw-feporthttps"
+    protocol                            = "HTTPS"
+    host_name                           = var.webapp_url
+    ssl_certificate_name                = var.ssl_cert_name
+    pick_host_name_from_backend_address = true
+  }
+
+  backend_address_pool {
+    name        = "webapp"
+    fqdns = ["${var.webapp_name}.azurewebsites.net"]
+  }
+
+  backend_http_settings {
+    name                  = "webapp"
+    cookie_based_affinity = "Disabled"
+    path                  = "/"
+    port                  = 443
+    protocol              = "Https"
+    request_timeout       = 20
+    probe_name            = "webapp"
+  }
+
+  request_routing_rule {
+    name                       = "webapp"
+    rule_type                  = "Basic"
+    http_listener_name         = "webapp"
+    backend_address_pool_name  = "webapp"
+    backend_http_settings_name = "webapp"
+  }
+
+  probe {
+    name                = "webapp"
+    protocol            = "https"
+    path                = "/"
+    host                = "${var.webapp_name}.azurewebsites.net"
+    interval            = "30"
+    timeout             = "30"
+    unhealthy_threshold = "3"
+  }
+
   # Waf config
 
   # waf_configuration {
