@@ -86,6 +86,18 @@ resource "azurerm_application_gateway" "AppGw" {
     backend_http_settings_name    = "${var.ag_name_fragment}-appgw-be-htst"
   }
 
+  # Rewrite rules
+  rewrite_rule_set {
+    name                          = "${var.ag_name_fragment}-appgw-rewrite-rules"
+    rewrite_rule {
+      name                        = "StrictTransportSecurityRule"
+      rule_sequence               = 1
+      response_header_configuration {
+        header_name               = "Strict-Transport-Security"
+        header_value              = "max-age=86400; includeSubDomains"
+      }
+    }
+  }   
   # Redirect
   
   http_listener {
